@@ -1,0 +1,33 @@
+name: support-triage-env
+description: "AI Customer Support Triage Environment. Agents process, categorize, and resolve customer emails using policy-based decision making."
+version: 1.0.0
+author: "Antigravity Agent"
+tags: ["openenv", "customer-support", "nlp", "rl"]
+
+entrypoint: "app:app" # For FastAPI
+
+tasks:
+  - id: "easy"
+    name: "Refund Request Triage"
+    difficulty: "easy"
+  - id: "medium"
+    name: "Multi-Issue Support"
+    difficulty: "medium"
+  - id: "hard"
+    name: "Policy Eligibility"
+    difficulty: "hard"
+
+observation_space:
+  type: "dict"
+  schema:
+    email_content: "string"
+    metadata: "object"
+    status: "string"
+    last_action_result: "string"
+    available_policies: "array"
+
+action_space:
+  type: "dict"
+  schema:
+    command: "string"
+    data: "object"
