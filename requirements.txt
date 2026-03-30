@@ -1,0 +1,6 @@
+fastapi
+pydantic
+uvicorn[standard]
+openai
+python-multipart
+pyyaml
