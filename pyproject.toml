@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "support-triage-env"
+version = "1.0.0"
+description = "AI Customer Support Triage Environment. Agents process, categorize, and resolve customer emails."
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [
+  { name = "Antigravity Agent" }
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "pydantic",
+    "openai",
+    "python-multipart",
+    "pyyaml"
+]
+
+[project.urls]
+"Homepage" = "https://github.com/MADHANRAJ24/Heakthon"
