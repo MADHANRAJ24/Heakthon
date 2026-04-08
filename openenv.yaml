@@ -26,6 +26,10 @@ observation_space:
     last_action_result: "string"
     available_policies: "array"
 
+reward_range: [0.0, 1.0]
+
+render_modes: ["text"]
+
 action_space:
   type: "dict"
   schema:

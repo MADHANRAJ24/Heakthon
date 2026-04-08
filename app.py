@@ -88,10 +88,13 @@ async def reset(request: Request, req_body: Optional[ResetRequest] = None):
 async def step(action: Action):
     try:
         obs, reward, done, info = env.step(action)
+        # Move reasoning to info to keep reward as a pure float (standard OpenEnv)
+        info["reasoning"] = reward.reasoning
+        
         return {
             "observation": obs.model_dump(),
-            "reward": reward.model_dump(),
-            "done": done,
+            "reward": float(reward.value),
+            "done": bool(done),
             "info": info,
             "episode_id": env.state().get("episode_id"),
             **obs.model_dump()
