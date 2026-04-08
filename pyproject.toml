@@ -7,7 +7,7 @@ name = "support-triage-env"
 version = "1.0.0"
 description = "AI Customer Support Triage Environment. Agents process, categorize, and resolve customer emails."
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 authors = [
   { name = "Antigravity Agent" }
 ]
@@ -22,8 +22,12 @@ dependencies = [
     "pydantic",
     "openai",
     "python-multipart",
-    "pyyaml"
+    "pyyaml",
+    "openenv-core>=0.2.0"
 ]
+
+[project.scripts]
+server = "server.app:app"
 
 [project.urls]
 "Homepage" = "https://github.com/MADHANRAJ24/Heakthon"

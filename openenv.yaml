@@ -4,7 +4,7 @@ version: 1.0.0
 author: "Antigravity Agent"
 tags: ["openenv", "customer-support", "nlp", "rl"]
 
-entrypoint: "app:app" # For FastAPI
+entrypoint: "server.app:app" # For FastAPI
 
 tasks:
   - id: "easy"
