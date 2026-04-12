@@ -31,7 +31,8 @@ class TaskGrader:
                 score += 0.7
                 extracted_order = True
         
-        return min(1.0, score) if (categorized and extracted_order) else (0.3 if categorized else 0.0)
+        raw_score = score if (categorized and extracted_order) else (0.3 if categorized else 0.0)
+        return max(0.01, min(0.99, raw_score))
 
     @staticmethod
     def grade_medium(history: List[Dict[str, Any]]) -> float:
@@ -39,8 +40,6 @@ class TaskGrader:
         Grades Task 2 (Medium): Multi-issue and draft response.
         """
         score = 0.0
-        categories_found = []
-        order_found = False
         
         for step in history:
             action = step.get("action", {})
@@ -58,7 +57,7 @@ class TaskGrader:
                 if data.get("draft") and "shipping address" in data.get("draft").lower():
                     score += 0.3
         
-        return min(1.0, score)
+        return max(0.01, min(0.99, score))
 
     @staticmethod
     def grade_hard(history: List[Dict[str, Any]]) -> float:
@@ -66,24 +65,20 @@ class TaskGrader:
         Grades Task 3 (Hard): Policy check and eligibility calculation.
         """
         score = 0.0
-        policy_checked = False
         
         for step in history:
             action = step.get("action", {})
             cmd = action.get("command", "").lower()
             data = action.get("data", {})
             
-            # The agent might have a 'read_policy' action or just think about it
             if cmd == "resolve":
-                # Must determine ineligible correctly
                 if data.get("eligible") is False:
                     score += 0.5
-                    # Reasoning check
                     reason = str(data.get("reason", "")).lower()
                     if "14" in reason or "window" in reason or "exceeded" in reason:
                         score += 0.5
         
-        return score
+        return max(0.01, min(0.99, score))
 
 # Task definitions for OpenEnv metadata
 TASKS = [
