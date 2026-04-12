@@ -62,7 +62,7 @@ class BaselineAgent:
 
 def run_evaluation():
     # Load credentials
-    api_key = os.environ.get("OPENAI_API_KEY", "your-api-key")
+    api_key = os.environ.get("API_KEY", os.environ.get("OPENAI_API_KEY", "your-api-key"))
     base_url = os.environ.get("API_BASE_URL", "https://api.openai.com/v1")
     model_name = os.environ.get("MODEL_NAME", "gpt-3.5-turbo") # Or Nemotron etc.
 
