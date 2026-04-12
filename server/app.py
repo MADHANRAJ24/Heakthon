@@ -53,30 +53,31 @@ async def get_tasks():
 
 # Handle both GET and POST for /reset to be ultra-compatible
 @app.api_route("/reset", methods=["GET", "POST"])
-async def reset(request: Request, req_body: Optional[ResetRequest] = None):
+async def reset(request: Request):
     try:
         # Determine task_id from JSON body, query params, or default
-        task_id = "easy"
+        task_id = request.query_params.get("task_id", "easy")
         
-        if req_body:
-            task_id = req_body.task_id
-        elif request.method == "POST":
-            # Try to catch cases where body might be empty or malformed
+        if request.method == "POST":
+            # Safely attempt to parse JSON if provided
             try:
                 body = await request.json()
-                task_id = body.get("task_id", body.get("task", "easy"))
-            except:
-                pass # Default to easy
+                if isinstance(body, dict):
+                    task_id = body.get("task_id", body.get("task", task_id))
+            except Exception:
+                pass # Default to easy or query param
         
         obs = env.reset(task_id=task_id)
         current_state = env.state()
         
-        # Super-flat response structure to satisfy all potential graders
+        # Strictly standard OpenEnv reset response, no extra top-level fields
         resp = {
             "observation": obs.model_dump(),
-            "episode_id": current_state.get("episode_id"),
-            "status": "success",
-            **obs.model_dump()
+            "info": {
+                "message": "Environment reset successfully",
+                "episode_id": current_state.get("episode_id"),
+                "task_id": task_id
+            }
         }
         logger.info(f"Reset successful for task: {task_id}")
         return resp
@@ -91,13 +92,14 @@ async def step(action: Action):
         # Move reasoning to info to keep reward as a pure float (standard OpenEnv)
         info["reasoning"] = reward.reasoning
         
+        # Move episode_id to info to keep the top-level standard
+        info["episode_id"] = env.state().get("episode_id")
+        
         return {
             "observation": obs.model_dump(),
             "reward": float(reward.value),
             "done": bool(done),
-            "info": info,
-            "episode_id": env.state().get("episode_id"),
-            **obs.model_dump()
+            "info": info
         }
     except Exception as e:
         logger.error(f"Step failed: {str(e)}")
