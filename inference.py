@@ -74,11 +74,16 @@ def run_evaluation():
 
     for task_id in tasks:
         logger.info(f"Running task: {task_id}")
+        print(f"[START] task={task_id}", flush=True)
+        
         obs = env.reset(task_id=task_id)
         done = False
         history = []
+        step_count = 0
         
         while not done:
+            step_count += 1
+            
             # Prepare observation for agent (pydantic to dict)
             obs_dict = obs.model_dump()
             action_data = agent.get_action(obs_dict)
@@ -88,6 +93,8 @@ def run_evaluation():
             
             # Step in environment
             obs, reward, done, info = env.step(action)
+            
+            print(f"[STEP] step={step_count} reward={float(reward.value)}", flush=True)
             
             # Track history for grading
             history.append({
@@ -109,6 +116,7 @@ def run_evaluation():
             
         results[task_id] = score
         logger.info(f"Task {task_id} Score: {score}")
+        print(f"[END] task={task_id} score={float(score)} steps={step_count}", flush=True)
 
     print("\n--- Final Assessment Scores ---")
     print(json.dumps(results, indent=2))
